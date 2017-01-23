@@ -3,6 +3,7 @@
 Ansible repository for my own modules written in perl
 
 ##### ansible -k --ask-become-pass --become-method=sudo webserver1.domain.com -m rpm_version -a name=openssh -u USER
+```
 SSH password: 
 webserver1.domain.com | success >> {
     "changed": "False",
@@ -10,10 +11,10 @@ webserver1.domain.com | success >> {
     "release": "2.el6",
     "version": "7.4p1"
 }
-
+```
 
 ##### ansible-playbook -k --ask-become-pass --become-method=sudo -l webserver1.domain.com -u USER /etc/ansible/playbooks/rpm_version.yml
-
+```
 PLAY [all] ******************************************************************** 
 
 GATHERING FACTS *************************************************************** 
@@ -48,4 +49,4 @@ ok: [webserver1.domain.com] => {
 
 PLAY RECAP ******************************************************************** 
 webserver1.domain.com    : ok=3    changed=0    unreachable=0    failed=0 
-
+```
