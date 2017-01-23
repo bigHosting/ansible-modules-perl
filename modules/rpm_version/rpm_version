@@ -1,0 +1,61 @@
+#!/usr/bin/perl
+
+#
+# (c) Security Guy 2017.01.22
+#
+
+# root@barni[/etc/ansible]# ansible -k webserver1.domain.com -m rpm_version -a name=openssh -u USER
+#SSH password: 
+#webserver1.domain.com | success >> {
+#    "changed": "False",
+#    "name": "openssh",
+#    "release": "2.el6",
+#    "version": "7.4p1"
+#}
+
+
+#use Data::Dumper;
+use JSON;
+
+unless (@ARGV == 1)
+{
+        print "Usage: $0 filename\n";
+        exit;
+}
+
+my $file = $ARGV[0];
+if ( -f $file)
+{
+        # define a couple of empty hashes
+        my ( %args, %output ) = ();
+
+        # open the file
+        open (INI, "$file") || die "Can't open $file: $!\n";
+
+        # read the first line only from the file !!!
+        chomp(my $line = <INI>);
+
+        # input => foo=bar abc=xyz x=5 name=openssl
+        %args = map  { split(/=/, $_, 2) } grep { m/=/ } split(/\s+/, $line);
+
+        # default 'name' to openssl
+        $args{name} ||= "openssl";
+
+        $output{name}    = $args{name};
+        $output{changed} = "False";
+
+        $cmd = sprintf ( "/bin/rpm -q --queryformat '%{VERSION}' %s", $args{name} );
+        $output{version} = `$cmd`;
+
+        $cmd = sprintf ( "/bin/rpm -q --queryformat '%{RELEASE}' %s", $args{name} );
+        $output{release} = `$cmd`;
+
+        my $json = encode_json \%output;
+        print $json;
+
+        # close file handle
+        close (INI);
+}
+
+exit(0);
+

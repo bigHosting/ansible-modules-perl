@@ -1,0 +1,14 @@
+- hosts: all
+  gather_facts: yes
+  serial: "25%"
+  sudo: yes
+  tasks:
+    - name: rpm version for openssh
+      rpm_version: name={{ item }}
+      with_items:
+        - openssh-server
+      register: openssh_server_version
+      when: ansible_os_family == "RedHat"
+    - name: rpm_version - print info
+      debug: var=openssh_server_version
+
